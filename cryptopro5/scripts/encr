@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# Шифровка документа
+#
+
+tmp=`mktemp`
+cat - > "$tmp"
+cryptcp -encr -thumbprint "$1" -nochain -norev -pin "$2" "$tmp" "$tmp.enc" > /dev/null 2>&1
+signResult=$?
+if [ "$signResult" != "0" ]; then
+  rm -f "$tmp" "$tmp.enc"
+  exit $signResult
+fi
+cat "$tmp.enc"
+rm -f "$tmp" "$tmp.enc"
